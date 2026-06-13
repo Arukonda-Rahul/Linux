@@ -1,0 +1,9 @@
+printk_ratelimit = 5
+printk_ratelimit_burst = 10
+
+Meaning:
+
+max 10 messages
+every 5 seconds
+
+after that kernel suppresses repetitive logs.

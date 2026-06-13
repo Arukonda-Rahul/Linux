@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/exporting_variable/modules.order := {   echo /home/amd/kernel-backporting-training/exporting_variable/m2.o;   echo /home/amd/kernel-backporting-training/exporting_variable/m1.o; :; } > /home/amd/kernel-backporting-training/exporting_variable/modules.order

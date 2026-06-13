@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/workqueue/modules.order := {   echo /home/amd/kernel-backporting-training/workqueue/my_workqueue.o; :; } > /home/amd/kernel-backporting-training/workqueue/modules.order

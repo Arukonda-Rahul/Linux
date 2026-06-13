@@ -1,0 +1,138 @@
+This program is demonstrating how Linux generates unique ioctl command numbers using the macros:
+_IO()
+_IOR()
+_IOW()
+_IOWR()
+These macros create a 32-bit command number that is passed to:
+ioctl(fd, cmd, arg);
+________________________________________
+Why not use simple numbers?
+Bad:
+ioctl(fd, 1, 0);
+Another driver may also use:
+ioctl(fd, 1, 0);
+Collision occurs.
+Linux therefore encodes:
+Magic Number
+Command Number
+Direction
+Data Size
+into one value.
+________________________________________
+1. _IO()
+Your code:
+_IO(MAGIC_NUMBER1, 1)
+Expands conceptually to:
+Magic = 'l'
+Command = 1
+Size = 0
+Direction = none
+Used when no data is transferred.
+Example:
+ioctl(fd, RESET_DEVICE, 0);
+________________________________________
+2. _IOR()
+Your code:
+_IOR(MAGIC_NUMBER1, 2, int)
+Meaning:
+Magic = 'l'
+Command = 2
+Direction = Read
+Size = sizeof(int)
+Read means:
+Kernel -> User
+Example:
+int value;
+
+ioctl(fd, GET_VALUE, &value);
+Kernel fills the value.
+________________________________________
+3. _IOW()
+(Not in your program)
+Example:
+_IOW('l', 3, int)
+Meaning:
+User -> Kernel
+Example:
+int speed = 100;
+
+ioctl(fd, SET_SPEED, &speed);
+________________________________________
+4. _IOWR()
+Your code:
+_IOWR(MAGIC_NUMBER2, 4, int)
+Meaning:
+User -> Kernel
+Kernel -> User
+Both directions.
+Example:
+int val = 10;
+
+ioctl(fd, MODIFY_VALUE, &val);
+Kernel reads 10 and returns a modified value.
+________________________________________
+Why do outputs differ?
+These two:
+_IO('l', 1)
+_IO('i', 1)
+produce different values.
+Because:
+'l' = 108
+'i' = 105
+The magic number is encoded into the ioctl command.
+Thus:
+_IO('l',1)
+and
+_IO('i',1)
+cannot collide.
+________________________________________
+What is inside an ioctl number?
+Conceptually:
+ -------------------------------------------------
+| Direction | Size | Magic | Command Number |
+ -------------------------------------------------
+Linux encodes all these fields into a single integer.
+________________________________________
+Example
+_IOR('l', 2, int)
+contains:
+Direction = READ
+Size      = 4
+Magic     = 'l'
+Command   = 2
+Kernel can later decode it using:
+_IOC_DIR(cmd)
+_IOC_SIZE(cmd)
+_IOC_NR(cmd)
+_IOC_TYPE(cmd)
+________________________________________
+Example driver
+Header:
+#define MY_GET_VALUE _IOR('l', 1, int)
+User:
+int value;
+
+ioctl(fd, MY_GET_VALUE, &value);
+Kernel:
+long my_ioctl(struct file *f,
+              unsigned int cmd,
+              unsigned long arg)
+{
+    int value = 100;
+
+    switch(cmd)
+    {
+        case MY_GET_VALUE:
+            copy_to_user((int __user *)arg,
+                         &value,
+                         sizeof(value));
+            break;
+    }
+}
+________________________________________
+Interview Question
+Why use _IO, _IOR, _IOW, _IOWR instead of raw numbers?
+Answer:
+These macros generate unique ioctl command numbers by encoding the magic number, command number, data size, and data transfer direction into a single value, preventing collisions and allowing the kernel to validate ioctl requests.
+
+

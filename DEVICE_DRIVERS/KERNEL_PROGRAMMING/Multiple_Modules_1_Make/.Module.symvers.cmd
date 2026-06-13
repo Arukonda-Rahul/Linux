@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/Multiple_Modules_1_Make/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/amd/kernel-backporting-training/Multiple_Modules_1_Make/Module.symvers -n -T /home/amd/kernel-backporting-training/Multiple_Modules_1_Make/modules.order -i Module.symvers -e 

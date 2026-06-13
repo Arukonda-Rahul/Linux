@@ -1,0 +1,99 @@
+
+Creating multiple_device_nodes
+
+In our previous program, we created a single device, let's modify the code to create multiple device nodes for example: 5 device nodes 
+
+While allocating the device numbers, we need to specify the number of minor devices in the count argument:
+
+int alloc_chrdev_region (dev_t *   dev,  unsigned  baseminor, unsigned  count, const char * name);
+
+We need to create an array of struct cdev, and register each of the cdev with one minor number.
+
+
+
+
+Shared Buffer Problem
+In the shared buffer driver:
+char kernel_buffer[MAX_SIZE];
+is global and shared by all device nodes:
+/dev/msg0
+/dev/msg1
+/dev/msg2
+So all devices access the same memory.
+________________________________________
+Problem
+If data is written using one device:
+echo "hello" > /dev/msg0
+it becomes visible from another device:
+cat /dev/msg1
+because both devices use the same global buffer.
+________________________________________
+Overwrite Issue
+Writing from another device overrides previous data:
+echo "abc" > /dev/msg1
+Now reading from /dev/msg0 also shows:
+abc
+because the buffer is shared globally.
+________________________________________
+Drawbacks of Shared Buffer
+•	No device isolation 
+•	All minor devices share same data 
+•	One device can overwrite another device’s data 
+•	Difficult to manage concurrent access 
+•	Not suitable for real drivers 
+________________________________________
+Solution: Private Device Data
+Instead of using one global buffer, each device should maintain its own private data.
+Example:
+struct my_device {
+    struct cdev cdev;
+    char buffer[MAX_SIZE];
+    int buffer_index;
+};
+Now every device gets:
+•	separate buffer 
+•	separate state 
+•	independent data 
+________________________________________
+container_of Macro
+When a device is opened, kernel gives access to:
+inode->i_cdev
+which points to the embedded cdev.
+Using container_of(), we can retrieve the parent structure:
+dev = container_of(inode->i_cdev,
+                   struct my_device,
+                   cdev);
+This returns the address of:
+struct my_device
+from the embedded cdev.
+________________________________________
+Why container_of is Needed
+file_operations functions receive:
+struct inode *
+struct file *
+They do not directly know which device structure owns the cdev.
+container_of() helps recover the full device structure.
+________________________________________
+Storing Private Data
+Inside open():
+file->private_data = dev;
+Now all later operations:
+•	read 
+•	write 
+•	ioctl 
+can access device-specific data using:
+struct my_device *dev = file->private_data;
+________________________________________
+Advantages of Private Device Data
+•	Independent buffers per device 
+•	No overwrite between devices 
+•	Better scalability 
+•	Cleaner driver design 
+•	Used in real Linux drivers 
+________________________________________
+Key Concept
+Shared Buffer:
+all devices → same memory
+Private Data:
+each device → own memory/state
+

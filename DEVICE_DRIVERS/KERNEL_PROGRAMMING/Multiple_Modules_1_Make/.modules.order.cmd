@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/Multiple_Modules_1_Make/modules.order := {   echo /home/amd/kernel-backporting-training/Multiple_Modules_1_Make/hello1.o;   echo /home/amd/kernel-backporting-training/Multiple_Modules_1_Make/hello2.o; :; } > /home/amd/kernel-backporting-training/Multiple_Modules_1_Make/modules.order

@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/exporting_variable/m1.mod := printf '%s\n'   m1.o | awk '!x[$$0]++ { print("/home/amd/kernel-backporting-training/exporting_variable/"$$0) }' > /home/amd/kernel-backporting-training/exporting_variable/m1.mod

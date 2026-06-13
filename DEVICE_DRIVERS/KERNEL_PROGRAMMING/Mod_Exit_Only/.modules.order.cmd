@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/Mod_Exit_Only/modules.order := {   echo /home/amd/kernel-backporting-training/Mod_Exit_Only/onlyexit.o; :; } > /home/amd/kernel-backporting-training/Mod_Exit_Only/modules.order

@@ -1,0 +1,44 @@
+struct inode
+==============
+
+Header File: <linux/fs.h>
+
+The inode structure is used by the kernel internally to represent files. 
+
+An inode uniquely identifies a file in a file system.
+
+Whenever u open a file struct file is created
+Whenever  u create a file struct inode is created
+
+
+struct inode {
+	
+	//mode
+	umode_t                 i_mode;
+	
+	kuid_t                  i_uid;
+        kgid_t                  i_gid;
+
+	//inode number
+	unsigned long           i_ino;
+
+	//Contains the actual device number
+	dev_t                   i_rdev;
+
+	// Kernel representation of char device
+	struct cdev *i_cdev
+
+};
+
+Kernel developers have added two macros that can be used to obtain the major and minor numbers from an inode.
+
+unsigned int iminor(struct inode *inode);
+
+unsigned int imajor(struct inode *inode);
+
+Example you create a /dev/mydevice and one userapp.c opening and reading that /dev/mydevice and also printing file and inode address , here userapp.c is called 3 times every time the file address changes but inode is same
+Inode changes only when that device is deleted and created newly whereas file is always different because it is created per instance of open
+
+
+
+

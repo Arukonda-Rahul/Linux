@@ -1,0 +1,80 @@
+
+
+An atomic_t is not a normal int.
+it won't compile correctly because ref_count is a structure-like atomic object, not an integer.
+To get the actual integer value, kernel provides:
+atomic_read(&ref_count);
+
+
+
+FROM BOOTLIN
+
+/**
+ * atomic_dec_and_test() - atomic decrement and test if zero with full ordering
+ * @v: pointer to atomic_t
+ *
+ * Atomically updates @v to (@v - 1) with full ordering.
+ *
+ * Unsafe to use in noinstr code; use raw_atomic_dec_and_test() there.
+ *
+ * Return: @true if the resulting value of @v is zero, @false otherwise.
+ */
+
+
+
+FROM CODE
+---------
+
+static atomic_t device_available = ATOMIC_INIT(1);
+MODULE_LICENSE("GPL");
+
+static int device_open(struct inode *inode, struct file *file)
+{
+        pr_info("%s\n", __func__);
+        //Returns 1 if the result is zero, else 0
+        if (!atomic_dec_and_test(&device_available))
+        {
+                atomic_inc(&device_available);
+                return -EBUSY;
+        }
+        file->f_pos = 0;
+        buffer_index = 0;
+        return 0;
+}
+
+->here initially device_available is 1
+->process try to enter device_open 
+->in if condition, the value is automatically decremented to 0 (from bootlin the value we pass is automatically decremented to value-1 inside atomic_dec_and_test) and hence the value is 0, atomic_dec_and_test returns true
+->since it has !, it becomes false and fails to enter if and hence it sucessfully takes control.
+
+->if other process tries to open, hence device_available is 0, inside if it becomes -1 and atomic_dec_and_test will return false
+->since !, 0 becomes 1 and enters if and gets EBUSY.
+
+
+--------------------------------------------------------------
+This is actually a good conceptual distinction.
+
+Real-world examples
+------------------
+Active count
+************
+
+Used for:
+.........
+
+->Exclusive access
+->Prevent removal
+->Resource tracking
+->Total opens
+
+Used for:
+.........
+
+->Statistics
+->Debugging
+->Driver telemetry
+->Usage monitoring
+------------------------------------------------------------------------------------------
+
+
+

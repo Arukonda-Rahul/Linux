@@ -1,0 +1,104 @@
+what happens if i dont call close and process terminates
+If a process terminates without explicitly calling:
+close(fd)
+the kernel automatically closes all open file descriptors of that process.
+So eventually:
+release()
+in your driver WILL still be called.
+________________________________________
+Flow
+Suppose userspace:
+fd = open("/dev/mydev", O_RDWR);
+
+/* process crashes here */
+No explicit:
+close(fd);
+________________________________________
+When process exits:
+Kernel cleanup starts
+Kernel automatically:
+•	closes all file descriptors, 
+•	decrements file references, 
+•	frees resources. 
+________________________________________
+Eventually VFS does:
+fput()
+    ↓
+file_operations->release()
+So your driver gets:
+.release = device_release
+called automatically.
+
+
+Important consequence
+Your exclusive-open logic:
+device_busy = 1;
+will NOT remain stuck forever if process dies.
+Because kernel cleanup triggers:
+release()
+which resets:
+device_busy = 0;
+________________________________________
+Real Example
+Userspace:
+int fd = open("/dev/mydev", O_RDWR);
+
+while (1);
+Now kill process:
+kill -9 <pid>
+Kernel automatically calls:
+•	cleanup, 
+•	close fd, 
+•	release(). 
+________________________________________
+Your driver log may show
+Device Opened
+Device Closed
+even though app never explicitly called close().
+________________________________________
+Important Interview Concept
+Does release() always require explicit close()?
+Answer:
+No. release() is called when the final reference to the file is dropped. This can happen either through explicit close() or automatic cleanup during process termination.
+
+
+Very Important Distinction
+open()
+called when:
+new struct file created
+________________________________________
+release()
+called when:
+last reference to struct file disappears
+NOT strictly when:
+•	close() called. 
+________________________________________
+Interesting Case: fork()
+Suppose:
+fd = open(...);
+
+fork();
+Now parent and child share SAME:
+struct file
+If parent exits:
+release() NOT called yet
+because child still holds reference.
+Only when BOTH close/exit:
+release()
+happens.
+This is a very important VFS concept.
+________________________________________
+Internal Kernel Flow (simplified)
+Process exits:
+do_exit()
+   ↓
+exit_files()
+   ↓
+close files
+   ↓
+fput()
+   ↓
+__fput()
+   ↓
+file_operations->release()
+

@@ -1,0 +1,24 @@
+->Maintain a busy/open flag.
+ 
+->In open(), check whether the device is already in use and return -EBUSY if so. Clear the flag in release().
+
+->In concurrent environments, atomic operations or locking should be used to avoid race conditions.
+
+->Implementation
+----------------
+
+->Inside driver.c, declared a static variable 
+static int device_opened;
+
+->Inside open, took an if codition to check whether device is opened by other process or not.
+->if not ,it will go inisde open and update the variable, device_opened=1;
+
+->Inside release, the value of device_opened is updated
+device_opened=0;
+->in between if other process tries to open device, it will get EBUSY.
+
+
+
+HERE THE PROBLEM IS RACE CONDITION
+
+OS SO WE WILL GO FOR ATOMIC

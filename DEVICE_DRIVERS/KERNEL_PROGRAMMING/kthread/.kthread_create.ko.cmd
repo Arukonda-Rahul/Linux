@@ -1,0 +1,1 @@
+savedcmd_kthread_create.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T /usr/src/kernels/6.14.0-63.fc42.x86_64/scripts/module.lds -o kthread_create.ko kthread_create.o kthread_create.mod.o .module-common.o

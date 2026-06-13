@@ -1,0 +1,1 @@
+savedcmd_param_wo_helper.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T /home/rahul/Kernel/linux/scripts/module.lds -o param_wo_helper.ko param_wo_helper.o param_wo_helper.mod.o .module-common.o

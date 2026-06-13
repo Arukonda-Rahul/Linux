@@ -1,0 +1,1 @@
+./hello_compat.o

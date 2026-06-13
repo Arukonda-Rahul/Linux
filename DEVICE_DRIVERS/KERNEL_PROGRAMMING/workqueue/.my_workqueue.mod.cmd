@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/workqueue/my_workqueue.mod := printf '%s\n'   my_workqueue.o | awk '!x[$$0]++ { print("/home/amd/kernel-backporting-training/workqueue/"$$0) }' > /home/amd/kernel-backporting-training/workqueue/my_workqueue.mod

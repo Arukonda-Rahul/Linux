@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/workqueue/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/amd/kernel-backporting-training/workqueue/Module.symvers -n -T /home/amd/kernel-backporting-training/workqueue/modules.order -i Module.symvers -e 

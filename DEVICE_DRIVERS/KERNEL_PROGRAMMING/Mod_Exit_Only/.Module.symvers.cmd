@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/Mod_Exit_Only/Module.symvers :=  scripts/mod/modpost -M -m -a      -o /home/amd/kernel-backporting-training/Mod_Exit_Only/Module.symvers -n -T /home/amd/kernel-backporting-training/Mod_Exit_Only/modules.order -i Module.symvers -e 

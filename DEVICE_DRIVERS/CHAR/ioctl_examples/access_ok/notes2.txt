@@ -1,0 +1,127 @@
+### access_ok() Validation Using ioctl
+
+#### Objective
+
+Understand how `access_ok()` validates whether a pointer passed from userspace is a valid userspace address.
+
+---
+
+### Driver ioctl
+
+```c
+case MSG_GET_ADDRESS:
+{
+        unsigned long long addr;
+
+        addr = (unsigned long long)kernel_buffer;
+
+        put_user(addr,
+                 (unsigned long long __user *)arg);
+
+        break;
+}
+```
+
+The driver returns the kernel virtual address of `kernel_buffer` to userspace.
+
+---
+
+### Case 1: Valid Userspace Pointer
+
+Userspace:
+
+```c
+unsigned long long ptr;
+
+ioctl(fd, MSG_GET_ADDRESS, &ptr);
+```
+
+Flow:
+
+```text
+&ptr
+ ↓
+Userspace Address (0x7fff...)
+ ↓
+access_ok()
+ ↓
+Success
+ ↓
+put_user()
+ ↓
+Kernel Address copied to ptr
+```
+
+Result:
+
+```text
+access_ok() = 1
+ioctl succeeds
+```
+
+---
+
+### Case 2: Kernel Address Passed Back
+
+Userspace:
+
+```c
+unsigned long long ptr;
+
+ioctl(fd, MSG_GET_ADDRESS, &ptr);
+
+ioctl(fd, MSG_GET_ADDRESS, (void *)ptr);
+```
+
+Flow:
+
+```text
+ptr contains kernel address
+(0xffffffff...)
+        ↓
+passed as ioctl argument
+        ↓
+access_ok()
+        ↓
+Failure
+```
+
+Result:
+
+```text
+access_ok() = 0
+ioctl returns -EFAULT
+```
+
+---
+
+### Why access_ok() is needed
+
+Without validation, a malicious application could pass:
+
+```c
+0xffffffff81000000
+```
+
+and the driver might accidentally read or write kernel memory.
+
+`access_ok()` ensures the supplied pointer belongs to the userspace address range before using:
+
+```c
+copy_to_user()
+copy_from_user()
+put_user()
+get_user()
+```
+
+---
+
+### Key Learning
+
+```text
+Userspace Pointer  -> access_ok() passes
+Kernel Pointer     -> access_ok() fails
+```
+
+`access_ok()` is used to protect the kernel from invalid or malicious pointers supplied by userspace.
+

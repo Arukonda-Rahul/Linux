@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/Mod_Exit_Only/onlyexit.mod := printf '%s\n'   onlyexit.o | awk '!x[$$0]++ { print("/home/amd/kernel-backporting-training/Mod_Exit_Only/"$$0) }' > /home/amd/kernel-backporting-training/Mod_Exit_Only/onlyexit.mod

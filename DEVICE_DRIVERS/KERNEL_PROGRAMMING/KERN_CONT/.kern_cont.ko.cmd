@@ -1,0 +1,1 @@
+savedcmd_kern_cont.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T /home/amd/Rahul/linux/scripts/module.lds -o kern_cont.ko kern_cont.o kern_cont.mod.o .module-common.o

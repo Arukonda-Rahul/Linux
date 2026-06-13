@@ -1,0 +1,3 @@
+hexdump -C file.txt
+od -x file.txt
+xxd file.txt

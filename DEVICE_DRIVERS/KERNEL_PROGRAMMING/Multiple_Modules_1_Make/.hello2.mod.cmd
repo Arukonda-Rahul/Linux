@@ -1,0 +1,1 @@
+savedcmd_/home/amd/kernel-backporting-training/Multiple_Modules_1_Make/hello2.mod := printf '%s\n'   hello2.o | awk '!x[$$0]++ { print("/home/amd/kernel-backporting-training/Multiple_Modules_1_Make/"$$0) }' > /home/amd/kernel-backporting-training/Multiple_Modules_1_Make/hello2.mod
