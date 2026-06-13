@@ -1,0 +1,234 @@
+DATE:4-08-2023
+
+1)STORAGE CLASSES
+
+
+AUTOMATIC:
+
+
+#include<stdio.h>
+auto int a=2;
+int main()
+{
+	printf("%d",a);
+	return 0;
+}
+
+
+OUTPUT:
+pro3.c:2:10: error: file-scope declaration of ‘a’ specifies ‘auto’
+ auto int a=2;
+          ^
+pro3.c: In function ‘main’:
+
+///AUTO KEYWORD IS A LOCAL DECLARATION AND CAN BE DECLARED INSIDE A BLOCK
+
+
+#include<stdio.h>
+int main()
+{
+	int a=2;
+	int b;
+	printf("%d\n",a);
+	printf("%d",b);
+	return 0;
+}
+
+OUTPUT:a=2
+	n=21232(GARBAGE)
+
+
+COMMAND:gcc pro.c -opro
+
+
+2)EXTERNAL:
+
+#include<stdio.h>
+int main()
+{
+	extern int b=3;
+	printf("%d",b);
+	return 0;
+}
+
+
+OUTPUT:
+pro3.c: In function ‘main’:
+pro3.c:4:13: error: ‘b’ has both ‘extern’ and initializer
+  extern int b=3;
+             ^
+
+////EXTERN IS USED TO DECLARE GLOBAL KEYWORDS AND CAN BE USED TO DECLARE A GLOBAL KEYWORD
+main.c:
+
+
+
+#include<stdio.h>
+int a=2;
+int sub(int a,int b);
+int main()
+{
+	int b=3;
+	int c=a+b;
+	int d=sub(a,b);
+	printf("%d\n",c);
+	printf("%d",d);
+	return 0;
+}
+
+
+func.c
+
+extern int a;
+int sub(int a,int b)
+{
+	return a-b;
+}
+
+OUTPUT:
+5
+-1
+
+COMMAND:gcc main.c func.c -opromf
+
+
+
+#include<stdio.h>
+int a;
+int main()
+{
+	printf("%d",a);
+	return 0;
+}
+
+
+OUTPUT:a=0
+
+COMMAND:gcc pro.c -opro
+3)STATIC:
+
+LOCAL:
+
+#include<stdio.h>
+void add(int d)
+{
+	printf("a=%d\n",d);
+}
+int main()
+{
+	static int a=19;
+	for(int i=1;i<=2;i++)
+	{
+		static int a=0;
+		a+=i;
+		printf("%d\n",a);
+	}
+	add(a);
+	return 0;
+}
+
+COMMAND:gcc pro.c -opro
+	
+OUTPUT:
+1
+2
+a=19
+
+
+
+
+
+GLOBAL:
+
+
+#include<stdio.h>
+static int a=11;
+void add(int d)
+{
+	printf("a=%d\n",d);
+}
+int main()
+{
+	add(a);
+	return 0;
+}
+	
+COMMAND:gcc pro.c -opro
+OUTPUT:11
+
+
+
+MAIn.c
+
+
+#include<stdio.h>
+static int a=2;
+int sub(int b);
+int main()
+{
+	int b=3;
+	int c=a+b;
+	int d=sub(b);
+	printf("%d\n",c);
+	printf("%d",d);
+	return 0;
+}
+
+sub.c
+
+extern int a;
+int sub(int b)
+{
+	return a-b;
+}
+
+
+
+COMMAND:gcc main.c sub.c -oproms
+
+OUTPUT:
+/tmp/ccmq2Edi.o: In function `sub':
+pro4.c:(.text+0x9): undefined reference to `a'
+collect2: error: ld returned 1 exit status
+
+
+
+
+
+4)REGISTER
+
+
+#include<stdio.h>
+int main()
+{
+	register int a;
+	scanf("%d",&a);
+	printf("%d",a);
+	return 0;
+}
+
+OUTPUT:
+
+pro4.c:5:2: error: address of register variable ‘a’ requested
+  scanf("%d",&a);
+  ^~~~~
+///REGISTERS CANNOT HAVE ADDRESS
+
+
+
+#include<stdio.h>
+int main()
+{
+	register int a=2;
+	printf("%d",a);	
+	return 0;
+}
+
+OUTPUT:2
+
+COMMAND:gcc pro.c -opro
+
+
+
+
+

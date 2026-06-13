@@ -1,0 +1,79 @@
+DATE:03-08-2023
+
+GCC  (C programming Compilation stages) Lab Assignments:
+
+1. Write a program to create Preprocessor, Compilation, and Linker errors with the help of GCC options to stop corresponding stages. 
+
+How to Upload  this assignment results in gitlab:
+Create a one text file for this assignments and copy program, command name and command output.
+
+
+PREPROCESSOR:
+
+PROGRAM:
+
+
+int main()
+{
+    printf("Hello World");
+
+    return 0;
+}
+
+COMMAND:
+
+gcc -E pro.c -o pro.i
+
+
+
+OUTPUT:
+pro.c:1:2: error: invalid preprocessing directive #Include
+ #Include <stdio.h>
+  ^~~~~~~
+
+
+COMPILER:
+
+PROGRAM:
+
+#include <stdio.h>
+
+int main()
+{
+    printf("hello")
+    return 0;
+}
+
+COMMAND:
+gcc -S pro.c -o pro.s
+
+OUTPUT:
+
+pro.c: In function ‘main’:
+pro.c:7:5: error: expected ‘;’ before ‘return’
+     return 0;
+     ^~~~~~
+
+
+LINKER:
+
+
+#include<stdio.h>
+int main()
+{
+	printff("hello");
+	return 0;
+}
+
+COMMAND:
+
+gcc -c pro.c -o pro.o
+
+OUTPUT:
+pro.c: In function ‘main’:
+pro.c:5:5: warning: implicit declaration of function ‘printff’; did you mean ‘printf’? [-Wimplicit-function-declaration]
+     printff("Hello World");
+     ^~~~~~~
+     printf
+
+

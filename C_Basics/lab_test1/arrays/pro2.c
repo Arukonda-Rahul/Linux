@@ -1,0 +1,54 @@
+/*
+input:{3,4,5,1,2,6,7,4,4,2}
+
+*/
+
+
+
+
+
+
+
+
+
+
+#include<stdio.h>
+int main()
+{
+	int n,i,j,max=0,k=0,c=1;
+	printf("enter size of an array:\n");
+	scanf("%d",&n);
+	int arr[n],c1[20]={1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
+	printf("enter elements into array:\n");
+	for(i=0;i<n;i++)
+	{
+		scanf("%d",&arr[i]);
+	}
+	for(i=0;i<n;i++)
+	{
+		if(arr[i]<arr[i+1])
+		{
+			c++;
+		}
+		else if(arr[i]==arr[i+1])
+		{
+			continue;
+		}
+		else if(arr[i]>arr[i+1])
+		{
+			c1[k]=c;
+			k++;
+			c=1;
+		}
+	}
+	max=0;
+	for(i=0;i<10;i++)
+	{
+		if(c1[i]>max)
+		{
+			max=c1[i];
+		}
+	}
+	printf("tne max sorted length is:%d",max);
+	return 0;
+}
